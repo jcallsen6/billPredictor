@@ -14,7 +14,7 @@ python3 predictChamber.py data/predictMe.csv data/output.csv model/senateModel
 Make sure csv follows format of example in prediction notebook or training data in data/{chamber}.csv  
 Also make sure to insert {"key": "{key here}"} into api_key.json or specfiy location.  The free api key is available at https://www.propublica.org/datastore/api/propublica-congress-api       
 
-Or use current predictions notebook to see predictions on the most recent 20 active bills in the house and senate.  
+Or use currentPredictions notebook to see predictions on the 20 most recent active bills in the house and senate.  
 
 __Packages__:  
 requests  
