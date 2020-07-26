@@ -1,5 +1,5 @@
 # Bill Predictor
-Attempt at predicting outcomes of bills in congress  
+Attempt at predicting outcomes of bills in the U.S. Congress  
 
 __Usage:__  
 Full pipeline:  
