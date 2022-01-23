@@ -1,0 +1,12 @@
+{
+    "House": {
+        "Democrat": 222,
+        "Republican": 212,
+        "Independent": 0
+    },
+    "Senate": {
+        "Democrat": 48,
+        "Republican": 50,
+        "Independent": 2
+    }
+}

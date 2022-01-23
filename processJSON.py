@@ -24,7 +24,7 @@ def get_args():
 
     parser.add_argument('-data', default='data/',
                         help='Relative data path to main data folder', type=str)
-    parser.add_argument('-cong_data', default='data/congress_mem_char.json',
+    parser.add_argument('-cong_data', default='data/117/members.json',
                         help='Relative data path to json data for congress member characteristics', type=str)
 
     return(parser.parse_args())
@@ -59,6 +59,10 @@ def get_member_party(member_data, members, cong_json):
     party - str for member party, either D, R, or I
     members - dict for member parties updated
     '''
+    f = open('api_key.json' ,'r')
+    json_data = json.load(f)
+    api_key = json_data['key']
+
     try:
         id_type = 'bioguide'
         id = member_data[id_type + '_id']
@@ -71,17 +75,21 @@ def get_member_party(member_data, members, cong_json):
     except:
         for person in cong_json:
             try:
-                if(person['id'][id_type] == id):
+                if(person['id'] == id):
                     member = person
+                    break
             except:
                 pass
-
-        member_terms = [term['party'] for term in member['terms']]
-        (values, counts) = np.unique(
-            member_terms, return_counts=True)
-        indx = np.argmax(counts)
-        sponsor_party = values[indx][0]
-        members[id] = sponsor_party
+            
+        try:
+            member_terms = [term['party'] for term in member['terms']]
+            (values, counts) = np.unique(
+                member_terms, return_counts=True)
+            indx = np.argmax(counts)
+            sponsor_party = values[indx][0]
+            members[id] = sponsor_party
+        except KeyError: # To support old and new api formats
+            members[id] = sponsor_party = member['party']
 
     return sponsor_party, members
 
@@ -112,6 +120,7 @@ def get_bill_char(bill_json, members, cong_json, chamber, congress_chars, get_st
     sponsor_states = [bill_json['sponsor']['state']]
 
     for cosponsor in bill_json['cosponsors']:
+
         num_cosponsors += 1
 
         cosponsor_party, members = get_member_party(
@@ -119,7 +128,6 @@ def get_bill_char(bill_json, members, cong_json, chamber, congress_chars, get_st
 
         if(cosponsor_party != sponsor_party):
             bipartisan = True
-            break
 
         if(cosponsor['state'] not in sponsor_states):
             sponsor_states.append(cosponsor['state'])
@@ -149,7 +157,8 @@ def get_bill_char(bill_json, members, cong_json, chamber, congress_chars, get_st
             output.insert(0, congress_chars['Senate']['Democrat'])
     else:
         output = None
-
+    if(bill_json['bill_slug'] == 'hr5683'):
+        print(output)
     return output
 
 
